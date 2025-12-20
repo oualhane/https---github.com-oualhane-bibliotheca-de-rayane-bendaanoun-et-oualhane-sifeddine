@@ -1,0 +1,103 @@
+body {
+    background: #ffffff;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.sidebar {
+    width: 250px;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #0f172a, #020617);
+    color: #fff;
+    position: fixed;
+}
+
+.sidebar h3 {
+    font-weight: 600;
+}
+
+.sidebar a {
+    color: #cbd5e1;
+    padding: 14px 20px;
+    display: block;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.sidebar a:hover {
+    background: #1e293b;
+    color: #fff;
+}
+
+.content {
+    margin-left: 250px;
+    padding: 25px;
+}
+
+.topbar {
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, .05);
+}
+
+section {
+    display: none;
+}
+
+section.active {
+    display: block;
+}
+
+.kpi {
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+.kpi i {
+    font-size: 28px;
+}
+
+/* ==== GRID DES LIVRES ==== */
+#livresGrid .col {
+    margin-bottom: 20px;
+}
+
+.book-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    text-align: center;
+    transition: transform 0.2s;
+    height: 100%;
+}
+
+.book-card:hover {
+    transform: translateY(-5px);
+}
+
+.book-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.book-card .card-body {
+    padding: 10px;
+}
+
+.book-card .card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.book-card .card-author {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.book-card button {
+    margin: 2px;
+    font-size: 0.8rem;
+}

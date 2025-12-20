@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bibliotheca Pro – Smart Backoffice</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="rynk.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="sidebar">
+  <h3 class="text-center py-4">📚 Bibliotheca</h3>
+  <a onclick="showSection('dashboard')"><i class="fa fa-chart-pie me-2"></i>Dashboard</a>
+  <a onclick="showSection('livres')"><i class="fa fa-book me-2"></i>Livres</a>
+  <a onclick="showSection('auteurs')"><i class="fa fa-user-pen me-2"></i>Auteurs</a>
+</div>
+
+<div class="content">
+
+  <div class="topbar mb-4 d-flex justify-content-between">
+    <strong>Smart Library Backoffice</strong>
+    <span><i class="fa fa-user-circle"></i> Admin</span>
+  </div>
+
+  <section id="dashboard" class="active">
+    <h4 class="mb-4">📊 Dashboard</h4>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card kpi p-4">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h6>Total Livres</h6>
+              <h2 id="kpiLivres">0</h2>
+            </div>
+            <i class="fa fa-book text-primary"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card kpi p-4">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h6>Total Auteurs</h6>
+              <h2 id="kpiAuteurs">0</h2>
+            </div>
+            <i class="fa fa-user text-success"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <div class="card p-4">
+          <h6>Livres par Auteur</h6>
+          <canvas id="chartLivres"></canvas>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card p-4">
+          <h6>📥 Import OpenLibrary</h6>
+          <button class="btn btn-secondary" onclick="importerLivreOpenLibrary()">Importer un livre réel</button>
+          <p class="text-muted mt-2">Données réelles depuis OpenLibrary API</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="livres">
+    <h4>📘 Gestion des Livres</h4>
+    <form id="livreForm" class="row g-3 my-3">
+      <input type="hidden" id="livreIndex">
+      <div class="col-md-3"><input id="titre" class="form-control" placeholder="Titre" required></div>
+      <div class="col-md-3"><input id="auteur" class="form-control" placeholder="Auteur" required></div>
+      <div class="col-md-2"><input id="annee" type="number" class="form-control" placeholder="Année" required></div>
+      <div class="col-md-3"><input id="image" class="form-control" placeholder="URL de l'image" required></div>
+      <div class="col-md-1"><button class="btn btn-primary w-100">Enregistrer</button></div>
+    </form>
+
+    <div id="livresGrid" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3"></div>
+  </section>
+
+  <section id="auteurs">
+    <h4>✍️ Auteurs</h4>
+    <form id="auteurForm" class="row g-3 my-3">
+      <div class="col-md-5"><input id="nomAuteur" class="form-control" placeholder="Nom" required></div>
+      <div class="col-md-5"><input id="nationalite" class="form-control" placeholder="Nationalité" required></div>
+      <div class="col-md-2"><button class="btn btn-success w-100">Ajouter</button></div>
+    </form>
+    <ul id="auteursList" class="list-group"></ul>
+  </section>
+
+</div>
+
+<script src="rynk.js"></script>
+</body>
+</html>
+
