@@ -5,6 +5,7 @@ function showSection(id) {
     updateDashboard();
 }
 
+
 let livres = JSON.parse(localStorage.getItem('livres')) || [];
 let auteurs = JSON.parse(localStorage.getItem('auteurs')) || [];
 
@@ -12,6 +13,7 @@ let auteurs = JSON.parse(localStorage.getItem('auteurs')) || [];
 const livreForm = document.getElementById('livreForm');
 const auteurForm = document.getElementById('auteurForm');
 const auteursList = document.getElementById('auteursList');
+
 
 livreForm.addEventListener('submit', e => {
     e.preventDefault();
@@ -35,6 +37,154 @@ livreForm.addEventListener('submit', e => {
     afficherLivres();
     updateDashboard();
 });
+
+function afficherLivres() {
+    const grid = document.getElementById('livresGrid');
+    grid.innerHTML = '';
+    livres.forEach((l, i) => {
+        grid.innerHTML += `
+      <div class="col">
+        <div class="book-card">
+          <img src="${l.image}" alt="${l.titre}">
+          <div class="card-body">
+            <div class="card-title">${l.titre}</div>
+            <div class="card-author">${l.auteur} (${l.annee})</div>
+            <button class="btn btn-warning btn-sm" onclick="editLivre(${i})">✏️</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteLivre(${i})">🗑️</button>
+          </div>
+        </div>
+      </div>
+    `;
+    });
+}
+
+function editLivre(i) {
+    document.getElementById('titre').value = livres[i].titre;
+    document.getElementById('auteur').value = livres[i].auteur;
+    document.getElementById('annee').value = livres[i].annee;
+    document.getElementById('image').value = livres[i].image;
+    document.getElementById('livreIndex').value = i;
+    showSection('livres'); 
+}
+
+function deleteLivre(i) {
+    if (confirm('Supprimer ce livre ?')) {
+        livres.splice(i, 1);
+        saveData();
+        afficherLivres();
+        updateDashboard();
+    }
+}
+
+
+auteurForm.addEventListener('submit', e => {
+    e.preventDefault();
+    auteurs.push({
+        nom: document.getElementById('nomAuteur').value,
+        nat: document.getElementById('nationalite').value
+    });
+    saveData();
+    auteurForm.reset();
+    afficherAuteurs();
+    updateDashboard();
+});
+
+function afficherAuteurs() {
+    auteursList.innerHTML = '';
+    auteurs.forEach((a, i) => {
+        auteursList.innerHTML += `
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        ${a.nom} (${a.nat})
+        <button class="btn btn-danger btn-sm" onclick="supprimerAuteur(${i})"><i class="fa fa-trash"></i></button>
+      </li>`;
+    });
+}
+
+function supprimerAuteur(i) {
+    auteurs.splice(i, 1);
+    saveData();
+    afficherAuteurs();
+    updateDashboard();
+}
+
+
+let chart;
+function updateDashboard() {
+    document.getElementById('kpiLivres').innerText = livres.length;
+    document.getElementById('kpiAuteurs').innerText = auteurs.length;
+
+    const data = {};
+    livres.forEach(l => data[l.auteur] = (data[l.auteur] || 0) + 1);
+
+    const ctx = document.getElementById('chartLivres');
+    if (chart) chart.destroy();
+    chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(data),
+            datasets: [{
+                label: 'Nombre de Livres',
+                data: Object.values(data),
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+        }
+    });
+}
+
+
+function importerLivreOpenLibrary() {
+    const q = prompt('Entrer le titre du livre :');
+    if (!q) return;
+
+    fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(q)}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.docs && data.docs.length > 0) {
+                const b = data.docs[0];
+                const auteurNom = b.author_name ? b.author_name[0] : 'Inconnu';
+
+                // Ajouter l'auteur automatiquement s'il n'existe pas
+                if (!auteurs.some(a => a.nom === auteurNom)) {
+                    auteurs.push({ nom: auteurNom, nat: '---' });
+                    afficherAuteurs();
+                }
+
+                
+                livres.push({
+                    titre: b.title,
+                    auteur: auteurNom,
+                    annee: b.first_publish_year || '---',
+                    image: b.cover_i ? `https://covers.openlibrary.org/b/id/${b.cover_i}-M.jpg` : 'https://via.placeholder.com/250x350'
+                });
+
+                saveData();
+                afficherLivres();
+                updateDashboard();
+                alert('Livre importé avec succès !');
+            } else {
+                alert('Aucun livre trouvé.');
+            }
+        })
+        .catch(() => alert('Erreur lors de la connexion à OpenLibrary'));
+}
+
+
+function saveData() {
+    localStorage.setItem('livres', JSON.stringify(livres));
+    localStorage.setItem('auteurs', JSON.stringify(auteurs));
+}
+
+
+window.onload = () => {
+    afficherLivres();
+    afficherAuteurs();
+    updateDashboard();
+};
 
 
 
